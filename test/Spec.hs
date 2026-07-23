@@ -7,6 +7,9 @@ import Test.QuickCheck
 import System.Exit
 
 import Bitwise
+import Boolean
+import Sets
+import Curves
 
 prop_adder :: Word32 -> Word32 -> Property
 prop_adder a b = adder a b === a + b
