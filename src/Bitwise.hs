@@ -1,7 +1,7 @@
 module Bitwise (adder, multiplier, grayCode) where
 
-import Data.Word
-import Data.Bits
+import Data.Word (Word32)
+import Data.Bits ((.&.), xor, shiftL, shiftR)
 
 adder :: Word32 -> Word32 -> Word32
 adder a 0 = a
