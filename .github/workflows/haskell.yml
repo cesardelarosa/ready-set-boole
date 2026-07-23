@@ -16,29 +16,34 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # 1. Caché de la instalación de GHC y GHCup
+    - name: Cache GHCup
+      uses: actions/cache@v4
+      with:
+        path: ~/.ghcup
+        key: ${{ runner.os }}-ghcup-9.10.3
+
+    # 2. Setup de Haskell (hace 'cabal update' automáticamente por defecto)
     - uses: haskell-actions/setup@v2
       with:
         ghc-version: '9.10.3'
         cabal-version: 'latest'
 
-    - name: Cache
+    # 3. Caché de dependencias y builds
+    - name: Cache Cabal Store
       uses: actions/cache@v4
-      env:
-        cache-name: cache-cabal
       with:
         path: |
           ~/.cabal/packages
           ~/.cabal/store
           dist-newstyle
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
+        key: ${{ runner.os }}-cabal-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
+          ${{ runner.os }}-cabal-
 
+    # 4. Instalación de dependencias
     - name: Install dependencies
       run: |
-        cabal update
         cabal build --only-dependencies --enable-tests --enable-benchmarks
 
     - name: Build
