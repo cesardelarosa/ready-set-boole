@@ -16,6 +16,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    # 0. Configuración de permisos
+    - name: Fix permissions for GHCup
+      run: |
+        sudo mkdir -p /usr/local/.ghcup
+        sudo chown -R $USER:$USER /usr/local/.ghcup
+
     # 1. Caché de GHC y GHCup
     - name: Cache GHCup
       uses: actions/cache@v4
@@ -23,7 +29,7 @@ jobs:
         path: |
           ~/.ghcup
           /usr/local/.ghcup
-        key: ${{ runner.os }}-ghcup-9.10.3-v2
+        key: ${{ runner.os }}-ghcup-9.10.3-v3
 
     # 2. Setup de Haskell
     - uses: haskell-actions/setup@v2
