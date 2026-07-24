@@ -11,6 +11,7 @@ import Boolean
     printTruthTable,
     sat,
   )
+import Control.Monad (unless)
 import Curves (fnReverseMap, map)
 import Data.Bits (Bits (popCount, xor))
 import Data.Bool (Bool (True), otherwise)
@@ -67,7 +68,5 @@ return []
 
 main :: IO ()
 main = do
-  success <- $quickCheckAll
-  if success
-    then return ()
-    else exitFailure
+  pass <- $quickCheckAll
+  unless pass exitFailure
