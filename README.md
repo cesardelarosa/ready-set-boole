@@ -65,22 +65,22 @@ cabal run . -- evalformula '10&'
 
 | Infix | RPN |
 |---|---|
-| `A ∧ B` | `AB&` |
-| `(A ∨ B) ∧ C` | `AB\|C&` |
-| `¬(A ∧ B)` | `AB&!` |
+| $A \land B$ | `AB&` |
+| $(A \lor B) \land C$ | `AB\|C&` |
+| $\neg(A \land B)$ | `AB&!` |
 
 Symbol table shared across all Boolean/Set exercises:
 
 | Symbol | Math | Meaning |
 |---|---|---|
-| `0` / `1` | ⊥ / ⊤ | False / True |
-| `A`…`Z` | A…Z | Variable / Set |
-| `!` | ¬ | Negation |
-| `&` | ∧ | Conjunction (AND) |
-| `\|` | ∨ | Disjunction (OR) |
-| `^` | ⊕ | Exclusive OR (XOR) |
-| `>` | ⇒ | Material implication |
-| `=` | ⟺ | Logical equivalence |
+| `0` / `1` | $\perp$ / $\top$ | False / True |
+| `A`…`Z` | $A\ldots Z$ | Variable / Set |
+| `!` | $\neg$ | Negation |
+| `&` | $\land$ | Conjunction (AND) |
+| `\|` | $\lor$ | Disjunction (OR) |
+| `^` | $\oplus$ | Exclusive OR (XOR) |
+| `>` | $\Rightarrow$ | Material implication |
+| `=` | $\iff$ | Logical equivalence |
 
 ---
 
@@ -98,11 +98,11 @@ cabal run . -- adder 3 4   # 7
 
 XOR gives the sum without carry; AND + left-shift gives the carry. Repeat until carry is zero:
 
-```
-a + b = (a XOR b) + ((a AND b) << 1)
-```
+$$
+a + b = (a \oplus b) + ((a \land b) \ll 1)
+$$
 
-Complexity: O(log n).
+Complexity: $O(\log n)$.
 
 ---
 
@@ -116,11 +116,11 @@ cabal run . -- multiplier 6 7   # 42
 
 [Binary multiplication](https://en.wikipedia.org/wiki/Binary_multiplier): if the lowest bit of `b` is set, add `a` to the accumulator; shift `a` left and `b` right, repeat.
 
-```
-a * b = sum of (a << i) for each bit i set in b
-```
+$$
+a \times b = \sum_{i} a \cdot b_i \cdot 2^i \quad \text{where } b_i \in \{0,1\}
+$$
 
-Complexity: O(1) — fixed 32 iterations.
+Complexity: $O(1)$ — fixed 32 iterations.
 
 ---
 
@@ -134,9 +134,9 @@ cabal run . -- graycode 4   # 6
 
 A Gray code is a binary encoding where **consecutive values differ by exactly 1 bit**, avoiding glitches in hardware counters. Formula:
 
-```
-G(n) = n XOR (n >> 1)
-```
+$$
+G(n) = n \oplus (n \gg 1)
+$$
 
 | n | binary | Gray |
 |---|---|---|
@@ -161,9 +161,9 @@ cabal run . -- evalformula '11>'   # True
 cabal run . -- evalformula '10='   # False
 ```
 
-Returns `Right Bool` or `Left String` with a descriptive error. Stack machine — O(n).
+Returns `Right Bool` or `Left String` with a descriptive error. Stack machine — $O(n)$.
 
-> **Implication:** `A => B` is false **only** when A is true and B is false. Equivalently: `A => B ⟺ ¬A ∨ B`.
+> **Implication:** $A \Rightarrow B$ is false **only** when $A$ is true and $B$ is false. Equivalently: $A \Rightarrow B \iff \neg A \lor B$.
 
 ---
 
@@ -175,9 +175,9 @@ Prints the complete truth table for a formula with variables `A`…`Z`.
 cabal run . -- printtruthtable 'AB&C|'
 ```
 
-Output for `(A ∧ B) ∨ C`:
+Output for $(A \land B) \lor C$:
 
-```
+```text
 | A | B | C | = |
 |---|---|---|---|
 | 0 | 0 | 0 | 0 |
@@ -186,7 +186,7 @@ Output for `(A ∧ B) ∨ C`:
 | 1 | 1 | 1 | 1 |
 ```
 
-For n variables: 2ⁿ rows — O(2ⁿ).
+For $n$ variables: $2^n$ rows — $O(2^n)$.
 
 ---
 
@@ -203,11 +203,11 @@ Rewrite rules applied exhaustively:
 
 | Rule | Transformation |
 |---|---|
-| Double negation | `¬¬A ⟺ A` |
-| De Morgan (AND) | `¬(A ∧ B) ⟺ ¬A ∨ ¬B` |
-| De Morgan (OR) | `¬(A ∨ B) ⟺ ¬A ∧ ¬B` |
-| Implication | `A ⇒ B ⟺ ¬A ∨ B` |
-| Equivalence | `A ⟺ B ≡ (A ⇒ B) ∧ (B ⇒ A)` |
+| Double negation | $\neg\neg A \iff A$ |
+| De Morgan (AND) | $\neg(A \land B) \iff \neg A \lor \neg B$ |
+| De Morgan (OR) | $\neg(A \lor B) \iff \neg A \land \neg B$ |
+| Implication | $A \Rightarrow B \iff \neg A \lor B$ |
+| Equivalence | $A \iff B \equiv (A \Rightarrow B) \land (B \Rightarrow A)$ |
 
 ---
 
@@ -222,9 +222,9 @@ cabal run . -- cnf 'AB|C&'    # AB|C&
 
 Strategy: compute NNF first, then distribute `|` over `&`:
 
-```
-A ∨ (B ∧ C) ⟺ (A ∨ B) ∧ (A ∨ C)
-```
+$$
+A \lor (B \land C) \iff (A \lor B) \land (A \lor C)
+$$
 
 > Output can grow **exponentially** in the worst case. Tseitin-based algorithms avoid this but are not required.
 
@@ -240,7 +240,7 @@ cabal run . -- sat 'AA!&'   # False  (always False)
 cabal run . -- sat 'AA^'    # False  (A XOR A is always False)
 ```
 
-Brute-force: enumerate all 2ⁿ combinations — O(2ⁿ). SAT is NP-complete in general.
+Brute-force: enumerate all $2^n$ combinations — $O(2^n)$. SAT is NP-complete in general.
 
 ---
 
@@ -255,11 +255,11 @@ cabal run . -- powerset '[1,2,3]'
 # [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
 ```
 
-```
-P({1,2}) = { {}, {1}, {2}, {1,2} }
-```
+$$
+\mathcal{P}(\{1,2\}) = \{\emptyset, \{1\}, \{2\}, \{1,2\}\}
+$$
 
-If |A| = n then |P(A)| = 2ⁿ — space complexity O(2ⁿ).
+If $|A| = n$ then $|\mathcal{P}(A)| = 2^n$ — space complexity $O(2^n)$.
 
 ---
 
@@ -270,14 +270,14 @@ Evaluates a propositional RPN formula over **sets** instead of booleans. Logical
 ```bash
 cabal run . -- evalset 'AB&' '[[0,1,2],[0,3,4]]'   # [0]            (intersection)
 cabal run . -- evalset 'AB|' '[[0,1,2],[3,4,5]]'   # [0,1,2,3,4,5]  (union)
-cabal run . -- evalset 'A!'  '[[0,1,2]]'            # []             (complement)
+cabal run . -- evalset 'A!'  '[[0,1,2]]'           # []             (complement)
 ```
 
 | Logic | Set Theory |
 |---|---|
-| `¬A` | Aᶜ (complement w.r.t. universe) |
-| `A ∨ B` | A ∪ B (union) |
-| `A ∧ B` | A ∩ B (intersection) |
+| $\neg A$ | $A^\complement$ (complement w.r.t. universe) |
+| $A \lor B$ | $A \cup B$ (union) |
+| $A \land B$ | $A \cap B$ (intersection) |
 
 The universe is defined as the union of all provided sets.
 
@@ -289,15 +289,15 @@ The universe is defined as the union of all provided sets.
 
 #### `map`
 
-Maps a 2D coordinate `(x, y) ∈ [0, 2¹⁶−1]²` to a unique value in `[0, 1] ⊂ ℝ` using a [space-filling curve](https://en.wikipedia.org/wiki/Space-filling_curve) — specifically the [Z-order / Morton curve](https://en.wikipedia.org/wiki/Z-order_curve).
+Maps a 2D coordinate $(x, y) \in [0,\, 2^{16}-1]^2$ to a unique value in $[0, 1] \subset \mathbb{R}$ using a [space-filling curve](https://en.wikipedia.org/wiki/Space-filling_curve) — specifically the [Z-order / Morton curve](https://en.wikipedia.org/wiki/Z-order_curve).
 
 ```bash
 cabal run . -- map 128 256
 ```
 
-```
-f : ℕ² → [0,1] ⊂ ℝ,  f bijective
-```
+$$
+f : \mathbb{N}^2 \to [0,1] \subset \mathbb{R}, \quad f \text{ bijective}
+$$
 
 Interleaves the bits of `x` and `y` into a Morton code, normalised to `[0,1]`. Used in GPUs to improve texture cache locality.
 
@@ -305,15 +305,15 @@ Interleaves the bits of `x` and `y` into a Morton code, normalised to `[0,1]`. U
 
 #### `fnReverseMap`
 
-The inverse of `map`: recovers the original `(x, y)` from `n ∈ [0, 1]`.
+The inverse of `map`: recovers the original $(x, y)$ from $n \in [0, 1]$.
 
 ```bash
 cabal run . -- fnreversemap 0.5
 ```
 
-```
-f⁻¹ : [0,1] → ℕ²,  (f⁻¹ ∘ f)(x,y) = (x,y)
-```
+$$
+f^{-1} : [0,1] \to \mathbb{N}^2, \quad (f^{-1} \circ f)(x,y) = (x,y)
+$$
 
 Deinterleaves the bits of the Morton code to recover the original coordinates.
 
