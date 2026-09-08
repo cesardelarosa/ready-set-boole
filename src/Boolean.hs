@@ -9,6 +9,7 @@ module Boolean
   )
 where
 
+import AST (Expr, parseRPN)
 import Data.Bool (Bool (False, True), not, (&&), (||))
 import Data.Either (Either (Left, Right))
 import Data.Eq ((/=), (==))
@@ -52,6 +53,9 @@ evalFormula formula = evalRPN formula []
         step transform = case transform stack of
           Right newStack -> evalRPN cs newStack
           Left err -> Left err
+
+getVars :: Expr -> Either String [Char]
+getVars _ = undefined
 
 printTruthTable :: String -> IO ()
 printTruthTable _ = undefined

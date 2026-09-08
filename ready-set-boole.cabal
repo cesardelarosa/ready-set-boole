@@ -18,7 +18,10 @@ common warnings
 
 library
     import:           warnings
+    other-modules: AST, AST
     exposed-modules:
+        AST,
+        AST,
         Bitwise,
         Boolean,
         Sets,
