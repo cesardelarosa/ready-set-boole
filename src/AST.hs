@@ -1,5 +1,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
+module AST (Expr, parseRPN) where
+
+import Data.String (String)
+import Data.Bool (Bool)
+import Data.Char (Char)
+import Data.Either (Either (Left, Right))
+
 data Expr
   = Const Bool
   | Var Char
@@ -11,9 +18,9 @@ data Expr
   | Equiv Expr Expr
 
 parseRPN :: String -> Either String Expr
-parseRPN formula = parseExpr []
+parseRPN formula = parseExpr formula []
   where
-    parseExpr :: String [Expr] -> Either String Expr
+    parseExpr :: String -> [Expr] -> Either String Expr
     parseExpr [] [res] = Right res
     parseExpr [] [] = Left "Syntax error: Empty formula"
     parseExpr [] _ = Left "Syntax error: Incomplete evaluation, extra operands on stack"
