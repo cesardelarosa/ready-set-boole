@@ -1,6 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module AST (Expr, parseRPN) where
+module AST (Expr(..), parseRPN) where
 
 import Data.String (String)
 import Data.Bool (Bool)
